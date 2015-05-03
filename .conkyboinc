@@ -1,0 +1,21 @@
+#!/bin/bash
+args=("$@")
+cd Downloads/BOINC  #Move into the directory that BOINC is running from
+boinc_simple_info=`boinccmd --get_simple_gui_info` #Get the info required from BOINC client
+num_tasks=`boinccmd --get_simple_gui_info | tail -n 21 - | head -n 1 | cut -b 1`
+for i in `seq 1 $num_tasks`; # Run this for each WU that is active
+do
+ project_name=$(echo "$boinc_simple_info" | grep -m $i "WU name" | tail -n 1 - | cut -b 20-23);
+ #Change this check to whatever sounds reasonable for your projects. I use POEM@HOME and cyan signifies GPU, white for CPU 
+ if [ $project_name == "Snap" ]; then 
+  project_name="\${color #ffffff}"; #If CPU project
+ else
+  project_name="\${color #00afff}"; #else GPU project
+ fi
+ percentage_complete=`echo " $(echo "$boinc_simple_info" | grep -m $i 'fraction done:' | tail -n 1 - | sed -e 's/ fraction done: //') * 100" | bc -l | head -c 6`
+ est_seconds=`echo "$boinc_simple_info" | grep -m $i "estimated CPU time remaining:" | tail -n 1 - | sed -e 's/ estimated CPU time remaining: //'` #Start remaining time calc
+ est_seconds=${est_seconds/.*}
+ ((sec=est_seconds%60, est_seconds/=60, min=est_seconds%60, hrs=est_seconds/60))
+ timestamp=$(printf "%d:%02d:%02d" $hrs $min $sec) #Time remaining on WU, formattted HH:MM:SS
+ echo -e $project_name$percentage_complete'      '$timestamp'  '\${execbar "echo $percentage_complete"}"\${color}"
+done
