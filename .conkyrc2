@@ -1,0 +1,60 @@
+use_xft yes
+xftfont DejaVu Sans:size=9
+text_buffer_size 2048
+update_interval 1
+total_run_times 0
+own_window yes
+own_window_argb_visual true
+own_window_argb_value 180
+own_window_type desktop
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+double_buffer yes
+minimum_size 250 250
+draw_shades no
+draw_outline no
+draw_borders no
+stippled_borders 0
+border_width 1
+default_color white
+own_window_colour black
+alignment top_right
+gap_x 300
+gap_y 135
+
+# Subtract file system buffers from used memory?
+no_buffers yes
+
+# set to yes if you want all text to be in uppercase
+uppercase no
+
+# number of cpu samples to average
+# set to 1 to disable averaging
+cpu_avg_samples 8
+
+# number of net samples to average
+# set to 1 to disable averaging
+net_avg_samples 1
+
+# Force UTF8? note that UTF8 support required XFT
+override_utf8_locale yes
+
+# Add spaces to keep things from moving about?  This only affects certain objects.
+use_spacer none
+
+TEXT
+${if_running spotify}SPOTIFY ${hr 2}
+${image /tmp/coverart.jpg -p 0,20 -s 250x250 -n}
+${exec echo "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"}
+${execp ~/bin/conky.spotify.nowplaying.work.sh} \
+${exec expr "`qdbus org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 PlaybackStatus`"}: ${exec cat ~/.cache/spotify-nowplaying-elapsed-pretty}/${exec cat ~/.cache/spotify-nowplaying-length-pretty}
+Artist: ${if_existing /home/michael/.cache/spotifyArtistLength}${scroll 40 ${exec qdbus org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 Metadata | grep "artist" | cut -b 15- }}\
+${else}${exec qdbus org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 Metadata | grep "artist" | cut -b 15- }${endif}
+Title: ${if_existing /home/michael/.cache/spotifyTitleLength} ${scroll 40 ${exec qdbus org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 Metadata | grep "title" | cut -b 14- }}\
+${else} ${exec qdbus org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 Metadata | grep "title" | cut -b 14- }${endif}
+Album: ${if_existing /home/michael/.cache/spotifyAlbumLength} ${scroll 40 ${exec qdbus org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 Metadata | grep "album" | cut -b 14- }}\
+${else} ${exec qdbus org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 Metadata | grep "album" | cut -b 14- }${endif}
+${endif} 
+${if_running amarok}
+AMAROK ${hr 2}
+${execp ~/bin/conky.amarok.sh}
+${endif}
