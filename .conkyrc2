@@ -9,7 +9,7 @@ own_window_argb_value 180
 own_window_type desktop
 own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
 double_buffer yes
-minimum_size 250 250
+minimum_size 250 300
 draw_shades no
 draw_outline no
 draw_borders no
@@ -53,8 +53,14 @@ Title: ${if_existing /home/michael/.cache/spotifyTitleLength} ${scroll 40 ${exec
 ${else} ${exec qdbus org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 Metadata | grep "title" | cut -b 14- }${endif}
 Album: ${if_existing /home/michael/.cache/spotifyAlbumLength} ${scroll 40 ${exec qdbus org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 Metadata | grep "album" | cut -b 14- }}\
 ${else} ${exec qdbus org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 Metadata | grep "album" | cut -b 14- }${endif}
-${endif} 
-${if_running amarok}
-AMAROK ${hr 2}
+${endif} ${if_running amarok}AMAROK ${hr 2}
+${image /tmp/amarokcover.jpg -p 0,20 -s 250x250 -n}
+${exec echo "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"}
 ${execp ~/bin/conky.amarok.sh}
+Artist: ${if_existing /tmp/amarokArtistLength}${scroll 40 ${exec qdbus org.mpris.MediaPlayer2.amarok /org/mpris/MediaPlayer2 Metadata | grep ":artist:" | cut -b 15- }}\
+${else}${exec qdbus org.mpris.MediaPlayer2.amarok /org/mpris/MediaPlayer2 Metadata | grep ":artist:" | cut -b 15- }${endif}
+Title: ${if_existing /tmp/amarokTitleLength} ${scroll 40 ${exec qdbus org.mpris.MediaPlayer2.amarok /org/mpris/MediaPlayer2 Metadata | grep "title:" | cut -b 14- }}\
+${else} ${exec qdbus org.mpris.MediaPlayer2.amarok /org/mpris/MediaPlayer2 Metadata | grep "title:" | cut -b 14- }${endif}
+Album: ${if_existing /tmp/amarokAlbumLength} ${scroll 40 ${exec qdbus org.mpris.MediaPlayer2.amarok /org/mpris/MediaPlayer2 Metadata | grep ":album:" | cut -b 14- }}\
+${else} ${exec qdbus org.mpris.MediaPlayer2.amarok /org/mpris/MediaPlayer2 Metadata | grep ":album:" | cut -b 14- }${endif}
 ${endif}

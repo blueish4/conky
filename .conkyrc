@@ -62,7 +62,3 @@ ${execp ./.conkyboinc}
 NETWORK ${hr 2}
 Up: ${upspeed eth1} (${totalup eth1}) ${alignr}${upspeedgraph eth1 8,60 00AFFF 00AFFF}
 Down: ${downspeed eth1} (${totaldown eth1}) ${alignr}${downspeedgraph eth1 8,60 00AFFF 00AFFF}
-${if_running amarok}
-AMAROK ${hr 2}
-${execp ~/bin/conky.amarok.sh}
-${endif}
